@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101d2d" />
+  <title>Miyuki (美雪)</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .opening-screen {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: #101d2d;
+    }
+
+    .opening-title {
+      position: absolute;
+      color: #e8eef5;
+      font-family: Georgia, serif;
+      font-size: clamp(4rem, 9vw, 8rem);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+      z-index: 2;
+    }
+
+    .opening-title.visible {
+      opacity: 1;
+    }
+
+    .opening-title.hidden {
+      opacity: 0;
+    }
+
+    .english-title {
+      font-size: clamp(4rem, 8vw, 7rem);
+      letter-spacing: 0.04em;
+    }
+
+    .opening-tagline {
+      position: absolute;
+      margin-top: 12rem;
+      color: rgba(232, 238, 245, 0.75);
+      font-size: 0.9rem;
+      letter-spacing: 0.22em;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .opening-tagline.visible {
+      opacity: 1;
+    }
+
+    .opening-tagline.hidden {
+      opacity: 0;
+    }
+
+    .snowfall-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="opening-screen">
+
+    <canvas class="snowfall-canvas" id="snowfall"></canvas>
+
+    <div class="opening-title visible" id="japanese-title">
+      美雪
+    </div>
+
+    <div class="opening-title english-title hidden" id="english-title">
+      miyuki.
+    </div>
+
+    <p class="opening-tagline hidden" id="tagline">
+      Where winter feels endless.
+    </p>
+
+  </main>
+
+  <script>
+    // Opening sequence
+
+    const japaneseTitle = document.getElementById("japanese-title");
+    const englishTitle = document.getElementById("english-title");
+    const tagline = document.getElementById("tagline");
+
+    setTimeout(() => {
+      japaneseTitle.classList.remove("visible");
+      japaneseTitle.classList.add("hidden");
+      englishTitle.classList.remove("hidden");
+      englishTitle.classList.add("visible");
+    }, 2000);
+
+    setTimeout(() => {
+      tagline.classList.remove("hidden");
+      tagline.classList.add("visible");
+    }, 5000);
+
+
+    // Snowfall animation
+
+    const canvas = document.getElementById("snowfall");
+    const context = canvas.getContext("2d");
+
+    let width = 0;
+    let height = 0;
+    let animationFrame;
+
+    const flakes = [];
+
+    function createFlakes() {
+      flakes.length = 0;
+
+      for (let i = 0; i < 90; i++) {
+        flakes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2 + 0.5,
+          speed: Math.random() * 0.7 + 0.3,
+          drift: Math.random() * 0.5 - 0.25,
+          opacity: Math.random() * 0.6 + 0.2
+        });
+      }
+    }
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+
+      width = window.innerWidth;
+      height = window.innerHeight;
+
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      createFlakes();
+    }
+
+    function animate() {
+      context.clearRect(0, 0, width, height);
+
+      flakes.forEach(flake => {
+        flake.y += flake.speed;
+        flake.x += flake.drift;
+
+        if (flake.y > height + 5) {
+          flake.y = -5;
+          flake.x = Math.random() * width;
+        }
+
+        if (flake.x > width + 5) flake.x = -5;
+        if (flake.x < -5) flake.x = width + 5;
+
+        context.beginPath();
+        context.arc(
+          flake.x,
+          flake.y,
+          flake.radius,
+          0,
+          Math.PI * 2
+        );
+
+        context.fillStyle =
+          `rgba(235, 242, 250, ${flake.opacity})`;
+
+        context.fill();
+      });
+
+      animationFrame = requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", resize);
+
+    resize();
+    animate();
+
+    window.addEventListener("beforeunload", () => {
+      cancelAnimationFrame(animationFrame);
+    });
+  </script>
+</body>
+</html>
