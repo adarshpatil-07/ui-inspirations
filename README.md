@@ -15,6 +15,15 @@ This repository brings together interesting UI components, animations, interacti
 - **Loaders:** Unique loading animations.
 - **Other Elements:** Interesting UI components and design experiments.
 
+## Featured Designs
+
+### Miyuki (美雪)
+A cinematic Japanese winter-inspired opening screen featuring animated typography, smooth title transitions, and canvas-based snowfall.
+
+- **Category:** Landing Page / Animation
+- **Technologies:** React, TypeScript, CSS
+- **Source:** [`miyuki/`](miyuki/)
+
 ## Purpose
 
 The goal of this repository is to collect, build, and share useful UI components and creative design elements that developers can explore, learn from, and incorporate into their own projects.
